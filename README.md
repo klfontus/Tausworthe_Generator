@@ -1,2 +1,98 @@
-# Tausworthe_Generator
-Final Project for OMSA ISYE 6644 - Simulation. Implementation and analysis of the Tausworthe Generator
+---
+title: "README"
+author: "Kerstin Fontus"
+output: html_document
+---
+
+---
+
+### A Study of the Tausworthe Pseudo-Random Number Generator
+
+---
+
+The aim of this project is to implement a series of functions that allow the user to generate identically and independently Uniform(0,1) Pseudo-Random Numbers (PRN's) using the algorithm created by Robert Tausworthe. It involves generating a sequence of random bits, and then using fixed length sequences of those bits to create random base-2 numbers, which are then divided by their maximum allowed value to create a number between 0 and 1. The generated list of PRN's are then tested for goodness of fit and independence, plotted, and used to generate what should turn out to be a distribution of Normal(0,1) random deviates.
+
+
+### Code Files
+
+---
+
+There is only one code file created for this project: **Project Code.R**. It holds all the functions needed to create the algorithm as well as the **main** method which allows the user to customize the arguments of the algorithm and then run i.
+
+
+### Required Packages
+
+---
+
+The packages that are required to run the file are **dplyr**, **ggplot2**, and **plotly**. The installation and loading code are provided at the beginning of **Project Code.R**.
+
+
+### Functions
+
+---
+
+**Project Code.R** is split into 6 sections, each pertaining to a different step of creating our algorithm.
+
+##### **Binary Vector Generation**
+
+  - **initial_binary_rand**: generates an initial vector of *q* binary bits
+  - **binary_sequence_xor**: generates a vector of *n* binary bits using the initial vector of bits as a basis
+  
+##### **PRN Generation**
+
+  - **bin_to_num**: converts a vector of bits to a base-2 number
+  - **bin_rand_gen**: generates a vector of PRN's given a vector of bits and the number of bits we want to use for each PRN
+  - **taus_period**: calculates the period of the resulting vector of PRN's using *q*, assuming that they are i.i.d Uniform(0,1)
+  - **taus_gen**: takes in arguments *N* = the number of PRN's the user wants, *L* = the number of bits the user wants to use to create the PRN's, *Q* = the length of the initial vector of bits, *R* = a number that is strictly less than *Q* that is used to generate the final vector of bits; a vector of PRN's is generated using the above functions, plotted on a histogram, and then outputted
+
+##### **PRN Plotting**
+
+ - **plot_taus_2d**: plots two adjacent PRN's on a 2-Dimensional plot, and then saves the plot as a PNG called **plot2d.png**
+ - **plot_taus_3d**: plots three adjacent PRN's on an interactive 3-Dimensional plot, which is displayed by R, the user must save it manually if desired
+ - **plot_taus**: generates both types of plots using the above functions
+ 
+##### **Goodness of Fit and Independence Tests**
+
+  - **gof**: uses the Chi-Squared Goodness of Fit Test to test the identical nature of our vector of PRN's and prints out the result, the default number of bins used in the test is *k*=5.
+  - **up_down_ind**: uses the Up and Down Test to test the independent nature of our vector of PRN's and prints out the result
+  - **mean_ind**: uses the Above and Below the Mean Test to test the independent nature of our vector of PRN's and prints out the result
+  - **ind_and_fit**: runs all three tests to allow the user to determine if the vector of PRN's is identically and independently distributed as Uniform(0,1)
+  
+##### **Normal(0,1) Deviate Generation**
+  - **z_table_norm**: uses "table lookup" to generate a Normal distribution, i.e, using each PRN as the area under the curve of a Normal distribution and matching it to its corresponding "Z-Score"
+  - **b_m_norm**: uses the Box-Mueller Transform to generate two vectors of Normal deviates, which are outputted as a data frame with columns **Z1** and **Z2**
+  - **polar_norm**: uses the Polar Method of the Box-Mueller transform to generate two vectors of Normal deviates, which are outputted as a data frame with columns **Z1** and **Z2**
+  - **norm_test**: prints the mean and variance of an inputted vector of numbers, for the purpose of studying the spread of a vector of Normal deviates
+  - **norm_dev**: generates Normal deviates using all three methods, plots them on histograms with all of them being outputted in the same PNG file (**norm_plot.png**), and prints out their means and variances
+  
+##### **Main**
+
+  - **main**: takes in no arguments, the user defines the values of *n*, *l*, *q*, *r*, and *k* to generate a vector of PRN's, run goodness of fit and independence tests on it, generate Normal deviates from it, and create 2-D and 3-D plots from it; an initial seed is set to allow for reproducible results
+  - **Note**: The last line in the code file is "main()", meaning that it runs the entire algorithm based on the variable definitions in the definition of the **main** method
+  
+
+### How to Run
+
+---
+
+The user should first set their working directory to where they want to save the various plots generated by **Project Code.R**.
+
+The file can then be run either by running each function manually and sequentially or by running the whole file at once. After the user runs everything in the file for the first time, they will only have to re-run the **main** method after they adjust the variables defined in it and its function call. The user will want to adjust the variables in the **main** method based on how they want the PRN's to be generated. 
+
+**Main**'s initial variables are *n* = 1000, *l* = 6, *q* = 7, *r* = 3, and *k* = 5, which gives an identically and independently Uniform(0,1) distribution.
+
+### User Warnings
+
+---
+
+The purpose of this project is to study the resulting output of Uniform(0,1) PRN's, not to create a vector for input into a simulation or other random variate generator. If the user would like to use this implementation of the generator to create a vector for output, they should comment out the **ind_and_fit(prn,k)**, **norm_dev(prn)**, **dev.off()**, and **plot_taus(prn)** functions in **main**, and then uncomment the **prn** variable at the end of the method.
+
+After saving each plot in the working directory, the code **while (!is.null(dev.list()))  dev.off()** is run to ensure the next plot can be created and saved without issue. Sometimes this doesn't work and the saved plot is inaccessible to the user within the directory. If this occurs, the user should manually run **dev.off()** in the Console and then re-run the **main** method. The set seed in **main** ensures an identical result.
+
+For each call of the **main** method, any previously generated plots in the working directory with its original name will be overwritten. If the user would like to retain any plots they create, they must re-name them or move them to a different directory.
+
+The Box-Mueller Transforms and Polar Transforms (**b_m_norm** and **polar_norm**) take the longest time to run out of all the different parts of the algorithm. Larger values of *n*, *l*, *q*, and *r* will also create a large wait time for the generation of PRN's. 
+
+
+
+

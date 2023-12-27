@@ -1,10 +1,3 @@
----
-title: "README"
-author: "Kerstin Fontus"
-output: html_document
----
-
----
 
 ### A Study of the Tausworthe Pseudo-Random Number Generator
 
